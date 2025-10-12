@@ -18,8 +18,8 @@ public class TabelaHash{
     return chave % tamanho;
     }
 
-    public int inserirSondagemLinear(Registro registro, int indice) {
-    int colisoes = 0;
+    public long inserirSondagemLinear(Registro registro, int indice) {
+    long colisoes = 0;
 
     // Loop para encontrar a próxima posição livre
     while (vetorHash[indice] != null){
@@ -34,14 +34,14 @@ public class TabelaHash{
     return colisoes;
     }
 
-    public int inserir(Registro registro){
+    public long inserir(Registro registro){
         if(numeroElementos >= tamanho){
             System.out.println("Tabela hash cheia!");
              return 0;
         }
-        int chave = registro.getCodigo();
+        int chave = registro.obterCodigo();
         int indice = hash(chave);
-        int colisoes = 0;
+        long colisoes = 0;
         System.out.println("Tentando inserir -> " + chave + "no ínidce -> " + indice);
         if(vetorHash[indice] == null){
             vetorHash[indice] = registro;
@@ -64,7 +64,7 @@ public class TabelaHash{
         // A sondagem (loop) continua enquanto a posição atual não estiver vazia.
         while (vetorHash[indiceAtual] != null) {
             
-            if (vetorHash[indiceAtual].getCodigo() == chaveDesejada) { // Sucesso de primeira (0 Colisões para esta chave)
+            if (vetorHash[indiceAtual].obterCodigo() == chaveDesejada) { // Sucesso de primeira (0 Colisões para esta chave)
                 return vetorHash[indiceAtual]; // Devolve o registro
             }
 
@@ -140,7 +140,7 @@ public class TabelaHash{
 
         // Itere
         for (Registro registro : dados) {
-            int codigoParaBuscar = registro.getCodigo();
+            int codigoParaBuscar = registro.obterCodigo();
             Registro encontrado = tabela.buscar(codigoParaBuscar);
 
             // Verificação opcional
