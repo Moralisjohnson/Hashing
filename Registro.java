@@ -9,7 +9,7 @@ public class Registro{
         this.proximo = null;
     }
 
-    public int getCodigo(){
+    public int obterCodigo(){
         return codigo;
     }
 
