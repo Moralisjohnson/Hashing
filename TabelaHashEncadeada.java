@@ -18,10 +18,10 @@ public class TabelaHashEncadeada {
     }
 
     // metodo inserir
-    public int inserir(Registro registro) {
+    public long inserir(Registro registro) {
         int chave = registro.obterCodigo();
         int indice = hash(chave);
-        int colisao = 0;
+        long colisao = 0;
 
         // verificar se da pra inserir no vetor
         if (vetorHash[indice] == null) {
@@ -62,7 +62,7 @@ public class TabelaHashEncadeada {
         long semente = 12345L;
         int[] arrayQuantidadeRegistro = {100_000, 1_000_000, 10_000_000};
         int[] arrayTamanhos = {10_000, 100_000, 1_000_000};
-        int colisoes = 0; // contador de colisões
+        long colisoes = 0; // contador de colisões
         int quantidadeRegistros = -1;
         int tamanhoTabelaHash = -1;
 
