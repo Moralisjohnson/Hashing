@@ -1,0 +1,5 @@
+TabelaHash,tamanho da tabela,tamanho do conjunto,tempo de inserção (ms),tempo de busca (ms), colisoes
+"Hash Encadeado Multiplicativo",10000,100000,10.2366,5.4512, 90002
+"Hash Encadeado Multiplicativo",1000000,10000000,3847.6066,2597.3937, 9000050
+"Hash Encadeado Multiplicativo",10000,100000,9.6472,5.5112, 90002
+"Hash Encadeado Multiplicativo",1000000,10000000,3642.6821,2400.1180, 9000050
