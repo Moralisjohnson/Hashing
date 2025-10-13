@@ -1,0 +1,2 @@
+TabelaHash,tamanho da tabela,tamanho do conjunto,tempo de inserção (ms),tempo de busca (ms), colisoes
+"Hash Meio do Quadrado com rehashing quadrático",100000,1000000,2560.9065,254128.4840, 22182102
