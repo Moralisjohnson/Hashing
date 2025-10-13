@@ -134,6 +134,80 @@ public class TabelaHashEncadeada {
 
         System.out.println("Busca concluída!");
         System.out.println("Tempo total de busca, em ms: " + tempoBuscaTotal / 1_000_000.0);
+        System.out.println();
+
+        int espacoMaior = 0;
+        int espacoMenor = tamanhoTabelaHash;
+        int espacoTemporario = 0;
+        int somaEspacos = 0;
+        int contagemEspacos = 0;
+
+        //calculando os gaps/espaçamentos
+        for(Registro dado: tabela.vetorHash){
+
+            if (dado == null){
+                espacoTemporario ++;
+            } else { //se tiver algo no dado, significa que a sequencia de espacos/gaps acabou
+                if (espacoTemporario > espacoMaior) {
+                    espacoMaior = espacoTemporario;
+                }
+                if (espacoTemporario < espacoMenor) {
+                    espacoMenor = espacoTemporario;
+                }
+                somaEspacos += espacoTemporario;
+                contagemEspacos ++;
+                espacoTemporario = 0;
+            }
+        }
+        float media = (float)somaEspacos/contagemEspacos;
+
+        System.out.println("Calculando espaçamentos/gap:");
+        System.out.println("Maior espaçamento da tabela hash encadeada: " + espacoMaior);
+        System.out.println("Menor espaçamento da tabela hash encadeada: " + espacoMenor);
+        System.out.println("Media dos espaçamentos encontrados: " + media);
+        System.out.println();
+
+        //gerar as 3 maiores listas encadeadas, ou seja, as que tiveram mais colisões
+        Registro[] tresMaioresListas = new Registro[3];
+        int[] tresMaioresListaQuantidade = {0, 0, 0};
+        for(Registro dado: tabela.vetorHash){
+            int colisoesTemp = 0;
+            if(dado == null){
+                continue; //caso houver um gap na tabela e o dado ser nulo
+            }
+            while(dado.obterProximo() != null){
+                colisoesTemp++;
+                dado = dado.obterProximo();
+            }
+            if(colisoesTemp > tresMaioresListaQuantidade[0]){
+                int numeroTemporario = tresMaioresListaQuantidade[0];
+                Registro registroTemporario = tresMaioresListas[0];
+
+                //atualizando o array que sincroniza o tamanho da lista encadeada com sua respectiva posicao, a primeira posicao comeca o maior valor
+                tresMaioresListaQuantidade[0] = colisoesTemp;
+                tresMaioresListaQuantidade[2] = tresMaioresListaQuantidade[1];
+                tresMaioresListaQuantidade[1] = numeroTemporario;
+
+                tresMaioresListas[0] = dado;
+                tresMaioresListas[2] = tresMaioresListas[1];
+                tresMaioresListas[1] = registroTemporario;
+
+            } else if (colisoesTemp > tresMaioresListaQuantidade[1]){
+
+                tresMaioresListaQuantidade[2] = tresMaioresListaQuantidade[1];
+                tresMaioresListaQuantidade[1] = colisoesTemp;
+                tresMaioresListas[2] = tresMaioresListas[1];
+                tresMaioresListas[1] = dado;
+            } else if (colisoesTemp > tresMaioresListaQuantidade[2]){
+                tresMaioresListaQuantidade[2] = colisoesTemp;
+                tresMaioresListas[2] = dado;
+            }
+        }
+
+        System.out.println("3 maiores listas encadeadas da tabela:");
+        System.out.println("Primeiro lugar: " + tresMaioresListas[0] + " - " + tresMaioresListaQuantidade[0]);
+        System.out.println("Segundo lugar: " + tresMaioresListas[1] + " - " + tresMaioresListaQuantidade[1]);
+        System.out.println("Terceiro lugar: " + tresMaioresListas[2] + " - " + tresMaioresListaQuantidade[2]);
 
         // salvar metricas em CSV
         String tipoTabela = "Hash Encadeado Multiplicativo";
