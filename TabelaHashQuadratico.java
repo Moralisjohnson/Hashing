@@ -10,8 +10,8 @@ public class TabelaHashQuadratico {
         this.vetorHash = new Registro[tamanho];
     }
 
-    // função hash meio do quadrado
-    private int hashMeioDoQuadrado(int chave){
+    // função hash de divisao usando primos para distribuir melhor as chaves
+    private int hashDivisao(int chave){
         int R = 0;
 
         if (tamanho == 10_000) {
@@ -31,7 +31,7 @@ public class TabelaHashQuadratico {
     public int inserirHashDuplo(Registro registro, int indice){
         int colisoes = 0;
         int i = 1;
-        int passo = hashMeioDoQuadrado(indice);
+        int passo = hashDivisao(indice);
 
         while (vetorHash[indice] != null){
             colisoes++;
@@ -86,7 +86,7 @@ public class TabelaHashQuadratico {
         }
 
         int chave = registro.obterCodigo();
-        int indice = hashMeioDoQuadrado(chave);
+        int indice = hashDivisao(chave);
         int colisoes = 0;
         System.out.println("Tentando inserir -> " + chave + " no indice -> " + indice);
         if(vetorHash[indice] == null){
@@ -105,7 +105,7 @@ public class TabelaHashQuadratico {
     }
 
     public Registro buscar(int chaveDesejada) {
-        int indiceOriginal = hashMeioDoQuadrado(chaveDesejada);
+        int indiceOriginal = hashDivisao(chaveDesejada);
         int indiceAtual = indiceOriginal;
 
         // A sondagem (loop) continua enquanto a posição atual não estiver vazia.
@@ -132,7 +132,7 @@ public class TabelaHashQuadratico {
         Scanner scanner = new Scanner(System.in);
         long seed = 12345L;
         int[] arrayQuantidadeRegistros = {100_000, 1_000_000, 10_000_000};
-        int[] arrayTamanhos = {10_000, 100_000, 1_000_000};
+        int[] arrayTamanhos = {1_000_000, 10_000_000, 100_000_000};
         int colisoes_totais = 0; // Inícia com zero colisões
         int quantidadeRegistros = -1;
         int tamanhoTabelaHash = -1;
@@ -167,7 +167,7 @@ public class TabelaHashQuadratico {
         }
         scanner.close();
 
-        TabelaHash tabela = new TabelaHash(tamanhoTabelaHash);
+        TabelaHashQuadratico tabela = new TabelaHashQuadratico(tamanhoTabelaHash);
         Registro[] dados = GeradorDeDados.gerar(quantidadeRegistros, seed);
 
         long tempoInicialInsercao = System.nanoTime();
@@ -205,6 +205,37 @@ public class TabelaHashQuadratico {
 
         double tempoInsercaoMs = tempoTotalInsercao / 1_000_000.0;
         double tempoBuscaMs = tempoTotalBusca / 1_000_000.0;
+
+        int espacoMaior = 0;
+        int espacoMenor = tamanhoTabelaHash;
+        int espacoTemporario = 0;
+        int somaEspacos = 0;
+        int contagemEspacos = 0;
+
+        //calculando os gaps/espaçamentos
+        for(Registro dado: tabela.vetorHash){
+
+            if (dado == null){
+                espacoTemporario ++;
+            } else { //se tiver algo no dado, significa que a sequencia de espacos/gaps acabou
+                if (espacoTemporario > espacoMaior) {
+                    espacoMaior = espacoTemporario;
+                }
+                if (espacoTemporario < espacoMenor) {
+                    espacoMenor = espacoTemporario;
+                }
+                somaEspacos += espacoTemporario;
+                contagemEspacos ++;
+                espacoTemporario = 0;
+            }
+        }
+        float media = (float)somaEspacos/contagemEspacos;
+
+        System.out.println("Calculando espaçamentos/gap:");
+        System.out.println("Maior espaçamento da tabela hash encadeada: " + espacoMaior);
+        System.out.println("Menor espaçamento da tabela hash encadeada: " + espacoMenor);
+        System.out.println("Media dos espaçamentos encontrados: " + media);
+        System.out.println();
 
         String tipoTabela = "Hash Meio do Quadrado com rehashing quadrático";
         String nomeArquivo = "resultados_hashquadratico.csv";

@@ -1,4 +1,3 @@
-import java.util.Random;
 import java.util.Scanner;
 
 public class TabelaHashEncadeada {
@@ -61,7 +60,7 @@ public class TabelaHashEncadeada {
     public static void main(String[] args) {
         long semente = 12345L;
         int[] arrayQuantidadeRegistro = {100_000, 1_000_000, 10_000_000};
-        int[] arrayTamanhos = {10_000, 100_000, 1_000_000};
+        int[] arrayTamanhos = {1_000_000, 10_000_000, 100_000_000};
         long colisoes = 0; // contador de colisões
         int quantidadeRegistros = -1;
         int tamanhoTabelaHash = -1;
