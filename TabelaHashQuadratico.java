@@ -14,67 +14,37 @@ public class TabelaHashQuadratico {
     private int hashDivisao(int chave){
         int R = 0;
 
-        if (tamanho == 10_000) {
-            R = 9973; // Primo < 10000
-        } else if (tamanho == 100_000) {
-            R = 99989; // Primo < 100000
-        } else if (tamanho == 1_000_000) {
-            R = 999983; // Primo < 1000000
-        } else {
-            R = 97;
+        if (tamanho == 1_000_000) {
+            R = 999_983;
+        } else if (tamanho == 10_000_000) {
+            R = 9_999_991;
+        } else if (tamanho == 100_000_000) {
+            R = 99_999_989;
         }
 
-        int passo = R - (chave % R);
-        return passo;
+        int indice = chave % R;
+        return indice;
     }
 
-    public int inserirHashDuplo(Registro registro, int indice){
-        int colisoes = 0;
-        int i = 1;
-        int passo = hashDivisao(indice);
+    public int inserirSondagemQuadratica(Registro registro, int indiceBase){
+        int colisoes = 1; // Se chegou aqui, ja temos uma colisão, começa do 1
+        int indiceTemporario = indiceBase;
 
-        while (vetorHash[indice] != null){
-            colisoes++;
-            // Formula do Hash Duplo: indice = (h1(chave) + i * h2(chave)) % tamanhoTabela
-            indice = (indice + i * passo) % tamanho;
+        while (vetorHash[indiceTemporario] != null){
 
-            i++;
+            // Formula da Sondagem Quadratica: indice = (h1(chave) + i^2)
+            indiceTemporario = (indiceBase + (colisoes * colisoes)) % tamanho;
 
-            // Impedir loop infinito
-            if (i > tamanho){
+            if (colisoes > tamanho){
                 System.out.println("Tabela hash cheia!");
                 return colisoes;
             }
-        }
-
-        // Encontrou espaco livre, insere o registro
-        System.out.println("Espaço encontrado, inserindo registro");
-        vetorHash[indice] = registro;
-        return colisoes;
-    }
-
-    public int inserirSondagemQuadratica(Registro registro, int indice){
-        int colisoes = 0;
-        int i = 1;
-        int indiceAtual = indice;
-
-        while (vetorHash[indiceAtual] != null){
             colisoes++;
-
-            // Formula da Sondagem Quadratica: indice = (h1(chave) + i^2) % tamanho
-            indiceAtual = (indice + i * i) % tamanho;
-
-            i++;
-
-            if (i > tamanho){
-                System.out.println("Tabela hash cheia!");
-                return colisoes;
-            }
         }
 
         // Encontrou um espaço livre, insere o registro
         System.out.println("Espaço encontrado, inserindo registro");
-        vetorHash[indiceAtual] = registro;
+        vetorHash[indiceTemporario] = registro;
 
         return colisoes;
     }
@@ -106,27 +76,16 @@ public class TabelaHashQuadratico {
 
     public Registro buscar(int chaveDesejada) {
         int indiceOriginal = hashDivisao(chaveDesejada);
-        int indiceAtual = indiceOriginal;
+        
+        for(int i = 0; i < tamanho; i++){
+            int indiceTentativa = (indiceOriginal + (i * i)) % tamanho;
 
-        // A sondagem (loop) continua enquanto a posição atual não estiver vazia.
-        while (vetorHash[indiceAtual] != null) {
-
-            if (vetorHash[indiceAtual].obterCodigo() == chaveDesejada) { // Sucesso de primeira (0 Colisões para esta chave)
-                return vetorHash[indiceAtual]; // Devolve o registro
-            }
-
-            // Caso não seja o registro, devemos continuar procurando
-            indiceAtual = (indiceAtual + 1) % tamanho;
-
-            // Este if serve para que não tenhamos um while infinito se a tabela estiver cheia
-            if (indiceAtual == indiceOriginal) {
-                return null;
+            if(vetorHash[indiceTentativa] != null){
+                return vetorHash[indiceTentativa]; // Encontrado
             }
         }
-
-        // Elemento não existe
         return null;
-    }
+        }
 
     public static void main(String[] args){
         Scanner scanner = new Scanner(System.in);
@@ -149,16 +108,16 @@ public class TabelaHashQuadratico {
 
         switch (escolha){
             case 1:
-                quantidadeRegistros = arrayQuantidadeRegistros[0]; // 100.000
-                tamanhoTabelaHash = arrayTamanhos[0];              // 10.000
+                quantidadeRegistros = arrayQuantidadeRegistros[0]; 
+                tamanhoTabelaHash = arrayTamanhos[0];              
                 break;
             case 2:
-                quantidadeRegistros = arrayQuantidadeRegistros[1]; // 1.000.000
-                tamanhoTabelaHash = arrayTamanhos[1];              // 100.000
+                quantidadeRegistros = arrayQuantidadeRegistros[1]; 
+                tamanhoTabelaHash = arrayTamanhos[1];              
                 break;
             case 3:
-                quantidadeRegistros = arrayQuantidadeRegistros[2]; // 10.000.000
-                tamanhoTabelaHash = arrayTamanhos[2];              // 1.000.000
+                quantidadeRegistros = arrayQuantidadeRegistros[2]; 
+                tamanhoTabelaHash = arrayTamanhos[2];              
                 break;
             default:
                 System.out.println("Opção inválida. Encerrando...");
@@ -170,6 +129,7 @@ public class TabelaHashQuadratico {
         TabelaHashQuadratico tabela = new TabelaHashQuadratico(tamanhoTabelaHash);
         Registro[] dados = GeradorDeDados.gerar(quantidadeRegistros, seed);
 
+        // Bloco de inserção
         long tempoInicialInsercao = System.nanoTime();
         System.out.println("Iniciando inserção");
         for(Registro reg : dados) {
