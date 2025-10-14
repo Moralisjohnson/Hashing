@@ -14,7 +14,7 @@ Repositório para o trabalho de hash
     <h2>Funções Hash</h2>
         <p>Para a realização do trabalho, envolvendo desempenho de funções hash, foram selecionadas 3 tipos distintos de funções hash:</p>
         <ul>
-            <li>Resto da divisão</li>
-            <li>Hash de multiplicação</li>
-            <li>Hash de </li>
+            <li>Resto da divisão e rehashing linear</li>
+            <li>Hash de multiplicação e listas encadeadas</li>
+            <li>Hash de divisão otimizado com números primos e rehashing quadrático</li>
         </ul>
