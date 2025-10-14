@@ -1,2 +1,2 @@
 TabelaHash,tamanho da tabela,tamanho do conjunto,tempo de inserção (ms),tempo de busca (ms), colisoes
-"Hash resto da divisão, com rehasing linear",10000000,1000000,2367.0580,18.1233, 55112
+"Hash Meio do Quadrado com rehashing quadrático",10000000,1000000,1854.0328,17.4119, 105181
