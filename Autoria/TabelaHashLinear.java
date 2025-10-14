@@ -1,58 +1,53 @@
-import java.util.Random;
 import java.util.Scanner;
 
-public class TabelaHash{
+public class TabelaHashLinear {
 
     private Registro[] vetorHash;
     private final double A = 0.6180339887;
     private int tamanho;
     private int numeroElementos = 0;
 
-    public TabelaHash(int tamanho){
+    public TabelaHashLinear(int tamanho){
         this.tamanho = tamanho;
         this.vetorHash = new Registro[tamanho];
     }
 
-
     private int hash(int chave){
-    return chave % tamanho;
+        return chave % tamanho;
     }
 
     public long inserirSondagemLinear(Registro registro, int indice) {
-    long colisoes = 0;
+        long colisoes = 0;
 
-   
-    while (vetorHash[indice] != null){
-        colisoes++;
-        indice = (indice + 1) % tamanho;
-    }
+        while (vetorHash[indice] != null){
+            colisoes++;
+            indice = (indice + 1) % tamanho;
+        }
 
-    
-    System.out.println("Espaço encontrado, inserindo registro");
-    vetorHash[indice] = registro;
-    
-    return colisoes;
+        System.out.println("Espaço encontrado, inserindo registro");
+        vetorHash[indice] = registro;
+
+        return colisoes;
     }
 
     public long inserir(Registro registro){
         if(numeroElementos >= tamanho){
             System.out.println("Tabela hash cheia!");
-             return 0;
+            return 0;
         }
         int chave = registro.obterCodigo();
         int indice = hash(chave);
         long colisoes = 0;
-        System.out.println("Tentando inserir -> " + chave + "no ínidce -> " + indice);
+        System.out.println("Tentando inserir -> " + chave + " no índice -> " + indice);
         if(vetorHash[indice] == null){
             vetorHash[indice] = registro;
             System.out.println("Item adicionado com sucesso!");
             numeroElementos++;
             return colisoes;
         }
-     
         System.out.println("Colisão detectada, resolvendo por sondagem linear");
         colisoes = this.inserirSondagemLinear(registro, indice);
-        
+
         numeroElementos++;
         return colisoes;
     }
@@ -61,32 +56,28 @@ public class TabelaHash{
         int indiceOriginal = hash(chaveDesejada);
         int indiceAtual = indiceOriginal;
 
-       
         while (vetorHash[indiceAtual] != null) {
-            
+
             if (vetorHash[indiceAtual].obterCodigo() == chaveDesejada) {
-                return vetorHash[indiceAtual]; 
+                return vetorHash[indiceAtual];
             }
 
-           
             indiceAtual = (indiceAtual + 1) % tamanho;
 
-          
             if (indiceAtual == indiceOriginal) {
                 return null;
             }
         }
-  
-        
+
         return null;
-    }   
+    }
 
     public static void main(String[] args){
         Scanner scanner = new Scanner(System.in);
-        long seed = 12345L; 
+        long seed = 12345L;
         int[] arrayQuantidadeRegistros = {100_000, 1_000_000, 10_000_000};
-        int[] arrayTamanhos = {10_000, 100_000, 1_000_000};
-        long colisoes_totais = 0;
+        int[] arrayTamanhos = {1_000_000, 10_000_000, 100_000_000};
+        long colisoes_totais = 0; // Inícia com zero colisões
         int quantidadeRegistros = -1;
         int tamanhoTabelaHash = -1;
 
@@ -120,7 +111,7 @@ public class TabelaHash{
         }
         scanner.close();
 
-        TabelaHash tabela = new TabelaHash(tamanhoTabelaHash);
+        TabelaHashLinear tabela = new TabelaHashLinear(tamanhoTabelaHash);
         Registro[] dados = GeradorDeDados.gerar(quantidadeRegistros, seed);
 
         long tempoInicialInsercao = System.nanoTime();
@@ -138,12 +129,10 @@ public class TabelaHash{
 
         long tempoInicialBusca = System.nanoTime();
 
-        
         for (Registro registro : dados) {
             int codigoParaBuscar = registro.obterCodigo();
             Registro encontrado = tabela.buscar(codigoParaBuscar);
 
-           
             if (encontrado == null) {
                 System.out.println("Não foi possível encontrar o registro " + codigoParaBuscar);
             }
@@ -159,9 +148,39 @@ public class TabelaHash{
         double tempoInsercaoMs = tempoTotalInsercao / 1_000_000.0;
         double tempoBuscaMs = tempoTotalBusca / 1_000_000.0;
 
+        int espacoMaior = 0;
+        int espacoMenor = tamanhoTabelaHash;
+        int espacoTemporario = 0;
+        int somaEspacos = 0;
+        int contagemEspacos = 0;
+
+        for(Registro dado: tabela.vetorHash){
+
+            if (dado == null){
+                espacoTemporario ++;
+            } else {
+                if (espacoTemporario > espacoMaior) {
+                    espacoMaior = espacoTemporario;
+                }
+                if (espacoTemporario < espacoMenor) {
+                    espacoMenor = espacoTemporario;
+                }
+                somaEspacos += espacoTemporario;
+                contagemEspacos ++;
+                espacoTemporario = 0;
+            }
+        }
+        float media = (float)somaEspacos/contagemEspacos;
+
+        System.out.println("Calculando espaçamentos/gap:");
+        System.out.println("Maior espaçamento da tabela hash encadeada: " + espacoMaior);
+        System.out.println("Menor espaçamento da tabela hash encadeada: " + espacoMenor);
+        System.out.println("Media dos espaçamentos encontrados: " + media);
+        System.out.println();
+
         String tipoTabela = "Hash resto da divisão, com rehasing linear";
-        String nomeDoArquivo = "resultados_experimentos.csv";
-    
+        String nomeDoArquivo = "resultados_tabela_linear.csv";
+
         GeradorCSV.salvarResultados(nomeDoArquivo, tipoTabela, tamanhoTabelaHash, quantidadeRegistros, tempoInsercaoMs, tempoBuscaMs, colisoes_totais);
     }
 }
