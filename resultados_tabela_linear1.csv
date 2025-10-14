@@ -1,0 +1,2 @@
+TabelaHashLinearAutoria,tamanho da tabela,tamanho do conjunto,tempo de inserção (ms),tempo de busca (ms), colisoes
+"Hash resto da divisão, com rehasing linear",1000000,100000,273.5167,2.6300, 5459
