@@ -3,7 +3,7 @@ import java.util.Scanner;
 public class TabelaHashLinear {
 
     private Registro[] vetorHash;
-    private final double A = 0.6180339887;
+    
     private int tamanho;
     private int numeroElementos = 0;
 
@@ -77,7 +77,7 @@ public class TabelaHashLinear {
         long seed = 12345L;
         int[] arrayQuantidadeRegistros = {100_000, 1_000_000, 10_000_000};
         int[] arrayTamanhos = {1_000_000, 10_000_000, 100_000_000};
-        long colisoes_totais = 0; // Inícia com zero colisões
+        long colisoes_totais = 0; 
         int quantidadeRegistros = -1;
         int tamanhoTabelaHash = -1;
 
