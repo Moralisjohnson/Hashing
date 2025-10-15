@@ -3,7 +3,6 @@ import java.util.Scanner;
 public class TabelaHashLinear {
 
     private Registro[] vetorHash;
-    private final double A = 0.6180339887; // Constante A para a multiplicação
     private int tamanho;
     private int numeroElementos = 0;
 
@@ -184,8 +183,8 @@ public class TabelaHashLinear {
         float media = (float)somaEspacos/contagemEspacos;
 
         System.out.println("Calculando espaçamentos/gap:");
-        System.out.println("Maior espaçamento da tabela hash encadeada: " + espacoMaior);
-        System.out.println("Menor espaçamento da tabela hash encadeada: " + espacoMenor);
+        System.out.println("Maior espaçamento da tabela hash linear: " + espacoMaior);
+        System.out.println("Menor espaçamento da tabela hash linear: " + espacoMenor);
         System.out.println("Media dos espaçamentos encontrados: " + media);
         System.out.println();
 
