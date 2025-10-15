@@ -139,12 +139,10 @@ public class TabelaHashQuadratico {
 
         long tempoInicialBusca = System.nanoTime();
 
-        // Itere
         for (Registro registro : dados) {
             int codigoParaBuscar = registro.obterCodigo();
             Registro encontrado = tabela.buscar(codigoParaBuscar);
 
-            // Verificação opcional
             if (encontrado == null) {
                 System.out.println("Não foi possível encontrar o registro " + codigoParaBuscar);
             }
@@ -185,8 +183,8 @@ public class TabelaHashQuadratico {
         float media = (float)somaEspacos/contagemEspacos;
 
         System.out.println("Calculando espaçamentos/gap:");
-        System.out.println("Maior espaçamento da tabela hash encadeada: " + espacoMaior);
-        System.out.println("Menor espaçamento da tabela hash encadeada: " + espacoMenor);
+        System.out.println("Maior espaçamento da tabela hash quadratico: " + espacoMaior);
+        System.out.println("Menor espaçamento da tabela hash quadratico: " + espacoMenor);
         System.out.println("Media dos espaçamentos encontrados: " + media);
         System.out.println();
 
