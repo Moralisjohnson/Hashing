@@ -3,17 +3,16 @@ import java.util.Scanner;
 public class TabelaHashEncadeada {
     private Registro[] vetorHash;
     private final double A = 0.6180339887;
-    private int tamanho; // tamanhos: 1000 - 10000 - 100000
+    private int tamanho;
 
     public TabelaHashEncadeada (int tamanho) {
         this.tamanho = tamanho;
         this.vetorHash = new Registro[tamanho];
     }
 
-
     private int hash(int chave){
-        double parteFrac = (chave * A) - Math.floor(chave * A);
-        return (int) Math.floor(tamanho * parteFrac);
+        double parteFrac = (chave * A) - (int) (chave * A);
+        return (int) (parteFrac * tamanho);
     }
 
     public long inserir(Registro registro) {
@@ -24,9 +23,11 @@ public class TabelaHashEncadeada {
         if (vetorHash[indice] == null) {
             vetorHash[indice] = registro;
         } else {
+
             colisao++;
             Registro atual = vetorHash[indice];
             while (atual.obterProximo() != null) {
+                colisao++;
                 atual = atual.obterProximo();
             }
             atual.inserirProximo(registro);
@@ -34,15 +35,14 @@ public class TabelaHashEncadeada {
         return colisao;
     }
 
-    // metodo buscar
+
     public int buscar(int chave) {
         int indice = hash(chave);
         int encontrado = 0;
 
-
         if (vetorHash[indice] != null) {
             Registro atual = vetorHash[indice];
-            while (atual.obterCodigo() != chave) {
+            while (atual.obterCodigo() != chave && atual != null) {
                 atual = atual.obterProximo();
             }
 
@@ -101,11 +101,8 @@ public class TabelaHashEncadeada {
         long tempoInsercaoFinal = System.nanoTime();
         double tempoInsercaoTotal = (tempoInsercaoFinal - tempoInsercaoInicial) / 1_000_000.0;
 
-
-
         System.out.println("Total de colisões: " + colisoes);
-        System.out.println("Tempo de inserção: " + tempoInsercaoTotal);
-
+        System.out.println("Tempo de inserção, em ms: " + tempoInsercaoTotal);
 
         System.out.println("\nIniciando buscas de todos os elementos: ");
 
@@ -123,17 +120,16 @@ public class TabelaHashEncadeada {
         long tempoBuscaFinal = System.nanoTime();
         double tempoBuscaTotal = (tempoBuscaFinal - tempoBuscaInicial) / 1_000_000.0;
 
-
         System.out.println("Busca concluída!");
         System.out.println("Tempo total de busca, em ms: " + tempoBuscaTotal / 1_000_000.0);
         System.out.println();
+
 
         int espacoMaior = 0;
         int espacoMenor = tamanhoTabelaHash;
         int espacoTemporario = 0;
         int somaEspacos = 0;
         int contagemEspacos = 0;
-
 
         for(Registro dado: tabela.vetorHash){
 
@@ -159,12 +155,13 @@ public class TabelaHashEncadeada {
         System.out.println("Media dos espaçamentos encontrados: " + media);
         System.out.println();
 
+
         Registro[] tresMaioresListas = new Registro[3];
         int[] tresMaioresListaQuantidade = {0, 0, 0};
         for(Registro dado: tabela.vetorHash){
             int colisoesTemp = 0;
             if(dado == null){
-                continue; //caso houver um gap na tabela e o dado ser nulo
+                continue;
             }
             while(dado.obterProximo() != null){
                 colisoesTemp++;
@@ -173,6 +170,7 @@ public class TabelaHashEncadeada {
             if(colisoesTemp > tresMaioresListaQuantidade[0]){
                 int numeroTemporario = tresMaioresListaQuantidade[0];
                 Registro registroTemporario = tresMaioresListas[0];
+
 
                 tresMaioresListaQuantidade[0] = colisoesTemp;
                 tresMaioresListaQuantidade[2] = tresMaioresListaQuantidade[1];
@@ -195,9 +193,9 @@ public class TabelaHashEncadeada {
         }
 
         System.out.println("3 maiores listas encadeadas da tabela:");
-        System.out.println("Primeiro lugar: " + tresMaioresListas[0] + " - " + tresMaioresListaQuantidade[0]);
-        System.out.println("Segundo lugar: " + tresMaioresListas[1] + " - " + tresMaioresListaQuantidade[1]);
-        System.out.println("Terceiro lugar: " + tresMaioresListas[2] + " - " + tresMaioresListaQuantidade[2]);
+        System.out.println("Primeiro lugar: " + tresMaioresListas[0] + " - Quantidade de registros: " + tresMaioresListaQuantidade[0]);
+        System.out.println("Segundo lugar: " + tresMaioresListas[1] + " - Quantidade de registros: " + tresMaioresListaQuantidade[1]);
+        System.out.println("Terceiro lugar: " + tresMaioresListas[2] + " - Quantidade de registros: " + tresMaioresListaQuantidade[2]);
 
 
         String tipoTabela = "Hash Encadeado Multiplicativo";
