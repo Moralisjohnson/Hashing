@@ -12,8 +12,8 @@ public class TabelaHashEncadeada {
 
     // hash de multiplicação
     private int hash(int chave){
-        double parteFrac = (chave * A) - Math.floor(chave * A);
-        return (int) Math.floor(tamanho * parteFrac);
+        double parteFrac = (chave * A) - (int) (chave * A);
+        return (int) (parteFrac * tamanho);
     }
 
     // metodo inserir
@@ -30,6 +30,7 @@ public class TabelaHashEncadeada {
             colisao++;
             Registro atual = vetorHash[indice];
             while (atual.obterProximo() != null) {
+                colisao++;
                 atual = atual.obterProximo();
             }
             atual.inserirProximo(registro);
@@ -46,7 +47,7 @@ public class TabelaHashEncadeada {
         // encontrar valor
         if (vetorHash[indice] != null) {
             Registro atual = vetorHash[indice];
-            while (atual.obterCodigo() != chave) {
+            while (atual.obterCodigo() != chave && atual != null) {
                 atual = atual.obterProximo();
             }
 
@@ -108,9 +109,9 @@ public class TabelaHashEncadeada {
         double tempoInsercaoTotal = (tempoInsercaoFinal - tempoInsercaoInicial) / 1_000_000.0;
 
 
-        // exibir colisões
+        // exibir colisões e tempo de inserção
         System.out.println("Total de colisões: " + colisoes);
-        System.out.println("Tempo de inserção: " + tempoInsercaoTotal);
+        System.out.println("Tempo de inserção, em ms: " + tempoInsercaoTotal);
 
         // realizar buscas
         System.out.println("\nIniciando buscas de todos os elementos: ");
@@ -204,9 +205,9 @@ public class TabelaHashEncadeada {
         }
 
         System.out.println("3 maiores listas encadeadas da tabela:");
-        System.out.println("Primeiro lugar: " + tresMaioresListas[0] + " - " + tresMaioresListaQuantidade[0]);
-        System.out.println("Segundo lugar: " + tresMaioresListas[1] + " - " + tresMaioresListaQuantidade[1]);
-        System.out.println("Terceiro lugar: " + tresMaioresListas[2] + " - " + tresMaioresListaQuantidade[2]);
+        System.out.println("Primeiro lugar: " + tresMaioresListas[0] + " - Quantidade de registros: " + tresMaioresListaQuantidade[0]);
+        System.out.println("Segundo lugar: " + tresMaioresListas[1] + " - Quantidade de registros: " + tresMaioresListaQuantidade[1]);
+        System.out.println("Terceiro lugar: " + tresMaioresListas[2] + " - Quantidade de registros: " + tresMaioresListaQuantidade[2]);
 
         // salvar metricas em CSV
         String tipoTabela = "Hash Encadeado Multiplicativo";
